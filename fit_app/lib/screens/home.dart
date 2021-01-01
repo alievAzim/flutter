@@ -64,6 +64,7 @@ class WorkOutsList extends StatelessWidget {
                   padding: EdgeInsets.only(right: 12),
                   child: Icon(
                     Icons.fitness_center,
+                    // ignore: deprecated_member_use
                     color: Theme.of(context).textTheme.title.color,
                   ),
                   decoration: BoxDecoration(

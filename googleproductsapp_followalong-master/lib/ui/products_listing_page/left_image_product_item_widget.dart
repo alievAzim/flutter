@@ -15,8 +15,9 @@ class LeftImageProductItemWidget extends StatelessWidget {
       onTap: () {
         Navigator.push(
             context,
-            MaterialPageRoute(builder:(context)=> ProductDetailPage(),)
-        );
+            MaterialPageRoute(
+              builder: (context) => ProductDetailPage(),
+            ));
       },
       child: Container(
         height: screenHeight * 0.25,

@@ -17,14 +17,12 @@ class DetailContent extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            child:Hero(
-              tag: product.name,
-                child: Image.asset(
-                  product.imagePath,
-                ),
-            )
-
-          ),
+              child: Hero(
+            tag: product.name,
+            child: Image.asset(
+              product.imagePath,
+            ),
+          )),
           Row(
             children: [
               Text('Starting*',

@@ -1,4 +1,7 @@
+import 'package:fit_app/domain/user.dart';
+import 'package:fit_app/services/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthorizationPage extends StatefulWidget {
   @override
@@ -9,11 +12,11 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
   TextEditingController _emailcontroller = TextEditingController();
   TextEditingController _passwordcontroller = TextEditingController();
 
-  String _register;
-  String _login;
   String _email;
   String _password;
   bool showlogin = true;
+
+  AuthService _authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,14 +25,14 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
         children: [
           _logo(),
           SizedBox(
-            height: 100,
+            height: 10,
           ),
           (showlogin
               ? Column(
                   children: [
-                    _form('LOGIN', _buttonAction),
+                    _form('LOGIN', _loginButtonAction),
                     Padding(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(5),
                       child: GestureDetector(
                         child: Text(
                           'Not register yet? Register!',
@@ -48,7 +51,7 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
                 )
               : Column(
                   children: [
-                    _form('Register', _buttonAction),
+                    _form('REGISTER', _registerButtonAction),
                     Padding(
                       padding: EdgeInsets.all(10),
                       child: GestureDetector(
@@ -151,28 +154,72 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
   }
 
   Widget _button(String text, void func()) {
-    return RaisedButton(
-      splashColor: Theme.of(context).primaryColor,
-      highlightColor: Theme.of(context).primaryColor,
-      color: Colors.white,
-      child: Text(
-        text,
-        style: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: RaisedButton(
+        splashColor: Theme.of(context).primaryColor,
+        highlightColor: Theme.of(context).primaryColor,
+        color: Colors.white,
+        child: Text(
+          text,
+          style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 20),
+        ),
+        onPressed: () {
+          func();
+        },
       ),
-      onPressed: () {
-        func();
-      },
     );
   }
 
-  void _buttonAction() {
+  void _loginButtonAction() async {
     _email = _emailcontroller.text;
     _password = _passwordcontroller.text;
-    _emailcontroller.clear();
-    _passwordcontroller.clear();
+
+    if (_email.isEmpty || _password.isEmpty) return;
+
+    Users user = await _authService.signInWithEmailAndPassword(
+        _email.trim(), _password.trim());
+
+    if (user == null) {
+      Fluttertoast.showToast(
+          msg: "Can't sign in you,please check your email or password!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      _emailcontroller.clear();
+      _passwordcontroller.clear();
+    }
+  }
+
+  void _registerButtonAction() async {
+    _email = _emailcontroller.text;
+    _password = _passwordcontroller.text;
+
+    if (_email.isEmpty || _password.isEmpty) return;
+
+    Users user = await _authService.registerWithEmailAndPassword(
+        _email.trim(), _password.trim());
+
+    if (user == null) {
+      Fluttertoast.showToast(
+          msg: "Can't register you,please check your email or password!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      _emailcontroller.clear();
+      _passwordcontroller.clear();
+    }
   }
 
   Widget _buttomWave() {
